@@ -1,4 +1,4 @@
-import { useRef, useState  } from 'react';
+import { useRef, useState } from 'react';
 import styles from './MealItemForm.module.css';
 import Input from '../../UI/Input';
 
