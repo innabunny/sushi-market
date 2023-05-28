@@ -10,7 +10,7 @@ const Cart = (props) => {
       ))}
     </ul>
   );
-
+ 
   return (
     <Modal onCloseCart={props.onCloseCart} >
       {cartItems}
