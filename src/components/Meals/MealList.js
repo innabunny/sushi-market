@@ -1,55 +1,61 @@
-import styles from './MealList.module.css';
-import Card from '../Layout/Card';
-import MealItem from './MealItem/MealItem';
-
-const DUMMY_MEALS = [
-  {
-    id: "m1",
-    name: 'Ролл "Наоми"',
-    description:
-      "Сыр Филадельфия, куриное филе, масаго, помидор, огурец, кунжут",
-    price: 11.99,
-  },
-  {
-    id: "m2",
-    name: "Спайс в лососе",
-    description: "Рис, лосось, соус спайс",
-    price: 3.99,
-  },
-  {
-    id: "m3",
-    name: "Суши с угрем",
-    description: "Угорь копченый, соус унаги, кунжут",
-    price: 4.99,
-  },
-  {
-    id: "m4",
-    name: 'Салат "Поке с лососем"',
-    description:
-      "Рис, лосось, огурец, чука, нори, стружка тунца, соус ореховый",
-    price: 7.99,
-  },
-];
+import styles from "./MealList.module.css";
+import Card from "../Layout/Card";
+import MealItem from "./MealItem/MealItem";
+import { useEffect, useState } from "react";
 
 const MealList = (props) => {
+  const [meals, setMeals] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const mealList = DUMMY_MEALS.map(item =>
-     <MealItem 
-     name={item.name}
-     description={item.description}
-     price={item.price}
-     id={item.id}
-     />);
+  useEffect(() => {
+    const fetchMeals = async () => {
+      setIsLoading(true);
+      const respone = await fetch(
+        "https://my-project-2bad7-default-rtdb.asia-southeast1.firebasedatabase.app/meals.json"
+      );
+      const responseData = await respone.json();
+      const loadedMeals = [];
+
+      for (const key in responseData) {
+        loadedMeals.push({
+          id: key,
+          name: responseData[key].name,
+          description: responseData[key].description,
+          price: responseData[key].price,
+        });
+      }
+
+      setMeals(loadedMeals);
+      setIsLoading(false);
+    };
+
+    fetchMeals();
+  }, []);
+
+  if (isLoading) {
+    return (
+      <section className={styles.loading}>
+        <p>Загрузка данных</p>
+      </section>
+    );
+  }
+
+  const mealList = meals.map((item) => (
+    <MealItem
+      name={item.name}
+      description={item.description}
+      price={item.price}
+      id={item.id}
+    />
+  ));
 
   return (
     <section className={styles.meals}>
       <Card>
-        <ul>
-          {mealList}
-        </ul>
-        </Card>
+        <ul>{mealList}</ul>
+      </Card>
     </section>
-  )
-}
+  );
+};
 
 export default MealList;
