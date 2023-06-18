@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 const MealList = (props) => {
   const [meals, setMeals] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [httpErrorMeassage, serHttpErrorMessage] = useState();
 
   useEffect(() => {
     const fetchMeals = async () => {
@@ -13,6 +14,11 @@ const MealList = (props) => {
       const respone = await fetch(
         "https://my-project-2bad7-default-rtdb.asia-southeast1.firebasedatabase.app/meals.json"
       );
+
+      if (!respone.ok) {
+        throw new Error("Что-то пошло не так");
+      }
+
       const responseData = await respone.json();
       const loadedMeals = [];
 
@@ -26,16 +32,28 @@ const MealList = (props) => {
       }
 
       setMeals(loadedMeals);
+      serHttpErrorMessage(null);
       setIsLoading(false);
     };
 
-    fetchMeals();
+    fetchMeals().catch((err) => {
+      setIsLoading(false);
+      serHttpErrorMessage(err.message);
+    });
   }, []);
 
   if (isLoading) {
     return (
       <section className={styles.loading}>
         <p>Загрузка данных</p>
+      </section>
+    );
+  }
+
+  if (httpErrorMeassage) {
+    return (
+      <section className={styles.loading}>
+        <p>{httpErrorMeassage}</p>
       </section>
     );
   }
