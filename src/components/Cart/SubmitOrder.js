@@ -1,4 +1,3 @@
-import { useState } from "react";
 import useInput from "../../hooks/use-input";
 import styles from "./SubmitOrder.module.css";
 
@@ -37,6 +36,11 @@ const SubmitOrder = (props) => {
     }
 
     console.log(enteredAddress, enteredCity, enteredName);
+    props.onSubmit({
+      name: enteredName,
+      city: enteredCity,
+      address: enteredAddress,
+    });
 
     resetNameValue();
     resetCityValue();
@@ -46,9 +50,13 @@ const SubmitOrder = (props) => {
   const isFormValid =
     isEnteredNameValid && isEnteredAddressValid && isEnteredCityValid;
 
+  const nameClassList = hasNameInputError ? `${styles.invalid}` : "";
+  const addressClassList = hasAddressInputError ? `${styles.invalid}` : "";
+  const cityClassList = hasCityInputError ? `${styles.invalid}` : "";
+
   return (
     <form className={styles.form} onSubmit={submitHandler}>
-      <div className={styles.control}>
+      <div className={`${styles.control} ${nameClassList}`}>
         <label htmlFor="name">Введите имя</label>
         <input
           value={enteredName}
@@ -62,7 +70,7 @@ const SubmitOrder = (props) => {
           <span className={styles.error}>Пожалуйста введите имя</span>
         )}
       </div>
-      <div className={styles.control}>
+      <div className={`${styles.control} ${cityClassList}`}>
         <label htmlFor="city">Введите название города</label>
         <input
           type="text"
@@ -78,7 +86,7 @@ const SubmitOrder = (props) => {
           </span>
         )}
       </div>
-      <div className={styles.control}>
+      <div className={`${styles.control} ${addressClassList}`}>
         <label htmlFor="address">Введите адрес</label>
         <input
           type="text"

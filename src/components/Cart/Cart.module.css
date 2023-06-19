@@ -44,3 +44,8 @@
   background-color: #6b068a;
   color: white;
 }
+
+.submitText {
+  font-size: 1.7rem;
+  text-align: center;
+}
